@@ -11,7 +11,7 @@
 		"url": "https://github.com/zengm-games/zengm.git"
 	},
 	"scripts": {
-		"build": "node tools/build/cli.ts",
+		"build": "tsx tools/build/cli.ts",
 		"deploy": "node --run lint && node --run test && node tools/deploy.ts",
 		"deploy-all": "node --run lint && node --run test && node tools/deploy-all.ts",
 		"dev": "node tools/watch/cli.ts",
