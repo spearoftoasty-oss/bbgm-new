@@ -8,6 +8,7 @@ import type {
 } from "../../../common/types.basketball.ts";
 import { archetypeModifiers } from "./archetypes.ts";
 import type { Archetype } from "./archetypes.ts";
+console.log("🔥 genRatings CALLED");
 
 const typeFactors: Record<
 	"point" | "wing" | "big",
