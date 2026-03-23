@@ -8,7 +8,6 @@ import type {
 } from "../../../common/types.basketball.ts";
 import { archetypeModifiers } from "./archetypes.ts";
 import type { Archetype } from "./archetypes.ts";
-console.log("🔥 genRatings CALLED");
 
 const typeFactors: Record<
 	"point" | "wing" | "big",
@@ -114,16 +113,15 @@ const genRatings = (
 	};
 
 	const archetypes = [
-	"sharpshooter",
-	"playmaker",
-	"slasher",
-	"defender",
-	"twoWay",
-	"allRounder",
-];
+		"sharpshooter",
+		"playmaker",
+		"slasher",
+		"defender",
+		"twoWay",
+		"allRounder",
+	];
 
-const archetype =
-	archetypes[Math.floor(Math.random() * archetypes.length)];
+	const archetype = archetypes[Math.floor(Math.random() * archetypes.length)];
 
 	// For correlation across ratings, to ensure some awesome players, but athleticism and skill are independent to
 	// ensure there are some who are elite in one but not the other
@@ -149,26 +147,25 @@ const archetype =
 
 		rawRatings[key] = limitRating(
 			factor *
-			typeFactor *
-			archetypeFactor * // 👈 applied here
-			random.realGauss(rawRatings[key], 6)
+				typeFactor *
+				archetypeFactor * // 👈 applied here
+				rawRatings[key],
 		);
 
 		// For TypeScript
 		// https://github.com/microsoft/TypeScript/issues/21732
 		if (typeFactor === undefined) {
 			throw new Error("Should never happen");
-		};
+		}
 
 		if (key === "fg" || key === "tp" || key === "pss" || key === "diq") {
-		console.log({
-			archetype,
-			key,
-			archetypeFactor,
-			value: rawRatings[key],
-		});
-	}
-		
+			console.log({
+				archetype,
+				key,
+				archetypeFactor,
+				value: rawRatings[key],
+			});
+		}
 	}
 
 	const ratings = {
@@ -200,7 +197,5 @@ const archetype =
 		ratings,
 	};
 };
-
-console.log("TEST RUN:", genRatings(2025, 0));
 
 export default genRatings;
