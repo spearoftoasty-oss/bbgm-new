@@ -201,4 +201,6 @@ const archetype =
 	};
 };
 
+console.log("TEST RUN:", genRatings(2025, 0));
+
 export default genRatings;
