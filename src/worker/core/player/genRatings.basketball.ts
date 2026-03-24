@@ -112,16 +112,25 @@ const genRatings = (
 		reb: 40,
 	};
 
-	const archetypes = [
-		"sharpshooter",
-		"playmaker",
-		"slasher",
-		"defender",
-		"twoWay",
-		"allRounder",
-	];
+	const archetypeList = Object.keys(archetypeModifiers) as Archetype[];
 
-	const archetype = archetypes[Math.floor(Math.random() * archetypes.length)];
+	// Primary archetype (everyone gets one)
+	const primaryArchetype =
+		archetypeList[Math.floor(Math.random() * archetypeList.length)];
+
+	// 30% chance to get a secondary archetype
+	let secondaryArchetype: Archetype | null = null;
+
+	if (Math.random() < 0.3) {
+		let candidate: Archetype;
+
+		do {
+			candidate =
+				archetypeList[Math.floor(Math.random() * archetypeList.length)];
+		} while (candidate === primaryArchetype);
+
+		secondaryArchetype = candidate;
+	}
 
 	// For correlation across ratings, to ensure some awesome players, but athleticism and skill are independent to
 	// ensure there are some who are elite in one but not the other
@@ -129,10 +138,14 @@ const genRatings = (
 	const factorShooting = helpers.bound(random.realGauss(1, 0.3), 0.2, 1.2);
 	const factorSkill = helpers.bound(random.realGauss(1, 0.3), 0.2, 1.2);
 	const factorIns = helpers.bound(random.realGauss(1, 0.3), 0.2, 1.2);
-	const archMods = archetypeModifiers[archetype];
+	const primaryMods = archetypeModifiers[primaryArchetype];
+	const secondaryMods = secondaryArchetype
+		? archetypeModifiers[secondaryArchetype]
+		: null;
 
 	for (const key of helpers.keys(rawRatings)) {
 		const typeFactor = typeFactors[type][key] ?? 1;
+
 		let factor = factorIns;
 
 		if (athleticismRatings.has(key)) {
@@ -143,24 +156,24 @@ const genRatings = (
 			factor = factorSkill;
 		}
 
-		const archetypeFactor = archMods[key] ?? 1;
+		// --- Archetype blending ---
+		let archetypeFactor = primaryMods[key] ?? 1;
+
+		if (secondaryMods) {
+			const secondaryFactor = secondaryMods[key] ?? 1;
+
+			// Weighted blend (primary dominates)
+			archetypeFactor = archetypeFactor * 0.7 + secondaryFactor * 0.3;
+		}
 
 		rawRatings[key] = limitRating(
-			factor *
-				typeFactor *
-				archetypeFactor * // 👈 applied here
-				rawRatings[key],
+			factor * typeFactor * archetypeFactor * rawRatings[key],
 		);
-
-		// For TypeScript
-		// https://github.com/microsoft/TypeScript/issues/21732
-		if (typeFactor === undefined) {
-			throw new Error("Should never happen");
-		}
 
 		if (key === "fg" || key === "tp" || key === "pss" || key === "diq") {
 			console.log({
-				archetype,
+				primaryArchetype,
+				secondaryArchetype,
 				key,
 				archetypeFactor,
 				value: rawRatings[key],
@@ -189,12 +202,18 @@ const genRatings = (
 		pos: "F",
 		pot: 0,
 		season,
-		skills: [],
+		skills: secondaryArchetype
+			? [primaryArchetype, secondaryArchetype]
+			: [primaryArchetype],
 	};
 
 	return {
 		heightInInches,
-		ratings,
+		ratings: {
+			...ratings,
+			primaryArchetype,
+			secondaryArchetype,
+		},
 	};
 };
 
