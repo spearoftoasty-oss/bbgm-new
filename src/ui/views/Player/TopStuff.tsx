@@ -438,6 +438,29 @@ const TopStuff = ({
 				) : null}
 			</div>
 		);
+		{
+			(() => {
+				let archetypes;
+				if (season !== undefined) {
+					archetypes = player.ratings.find((r) => r.season === season)?.skills;
+				} else {
+					archetypes = player.ratings.at(-1)?.skills;
+				}
+
+				if (!archetypes || archetypes.length === 0) return null;
+
+				return (
+					<div className="mt-1">
+						<strong>Archetypes:</strong>{" "}
+						{archetypes.map((arch: string, i: number) => (
+							<span key={i} className="badge bg-secondary me-1">
+								{arch}
+							</span>
+						))}
+					</div>
+				);
+			})();
+		}
 	}
 
 	const height = <Height inches={player.hgt} />;
