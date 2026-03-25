@@ -7,6 +7,17 @@ import genRatingsFootball from "./genRatings.football.ts";
 import genRatingsHockey from "./genRatings.hockey.ts";
 import pos from "./pos.ts";
 
+const getArchetype = (r: any) => {
+	if (r.tp > 75 && r.diq > 65) return "threeAndD";
+	if (r.pss > 75 && r.drb > 70) return "playmaker";
+	if (r.ins > 75 && r.stre > 70) return "postScorer";
+	if (r.dnk > 75 && r.spd > 70) return "slasher";
+	if (r.reb > 80) return "rebounder";
+	if (r.diq > 80) return "rimProtector";
+
+	return "allRounder";
+};
+
 const genRatings = (season: number, scoutingLevel: number) => {
 	const { heightInInches, ratings } = bySport<{
 		heightInInches: number;
@@ -145,6 +156,9 @@ const genRatings = (season: number, scoutingLevel: number) => {
 	ratings.fuzz *= factor;
 
 	ratings.pos = pos(ratings);
+
+	ratings.primaryArchetype = getArchetype(ratings);
+	ratings.secondaryArchetype = null; // or another function later
 
 	return {
 		heightInInches,
