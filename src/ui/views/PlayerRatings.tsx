@@ -52,6 +52,8 @@ const PlayerRatings = ({
 		"Exp",
 		"Ovr",
 		"Pot",
+		"Archetype",
+		"Secondary Archetype",
 		...ratings.map((rating) => `rating:${rating}`),
 		...ovrsPotsColNames,
 	]);
@@ -114,6 +116,8 @@ const PlayerRatings = ({
 					: null,
 				showRatings ? p.ratings.ovr : null,
 				showRatings ? p.ratings.pot : null,
+				p.ratings.primaryArchetype ?? null,
+				p.ratings.secondaryArchetype ?? null,
 				...ratings.map((rating) => (showRatings ? p.ratings[rating] : null)),
 				...ovrsPotsRatings,
 			],
