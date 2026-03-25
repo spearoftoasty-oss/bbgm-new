@@ -400,13 +400,14 @@ const TopStuff = ({
 			</div>
 		);
 	} else {
-		let skills;
-		if (season !== undefined) {
-			skills = player.ratings.find((row) => row.season === season)?.skills;
-		}
-		if (!skills) {
-			skills = player.ratings.at(-1)!.skills;
-		}
+		let skills: string[] = [];
+
+		const r =
+			season !== undefined
+				? player.ratings.find((row) => row.season === season)
+				: player.ratings.at(-1);
+
+		skills = r?.skills ?? [];
 
 		statusInfo = (
 			<div className="d-flex align-items-center">
@@ -440,14 +441,14 @@ const TopStuff = ({
 		);
 		{
 			(() => {
-				let archetypes;
-				if (season !== undefined) {
-					archetypes = player.ratings.find((r) => r.season === season)?.skills;
-				} else {
-					archetypes = player.ratings.at(-1)?.skills;
-				}
+				const r =
+					season !== undefined
+						? player.ratings.find((row) => row.season === season)
+						: player.ratings.at(-1);
 
-				if (!archetypes || archetypes.length === 0) return null;
+				const archetypes = r?.skills ?? [];
+
+				if (archetypes.length === 0) return null;
 
 				return (
 					<div className="mt-1">
