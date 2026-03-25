@@ -168,17 +168,6 @@ const genRatings = (
 
 		rawRatings[key] = limitRating(factor * typeFactor * rawRatings[key]);
 
-		for (const key of helpers.keys(rawRatings)) {
-			let archetypeFactor = primaryMods[key] ?? 1;
-
-			if (secondaryMods) {
-				const secondaryFactor = secondaryMods[key] ?? 1;
-				archetypeFactor = archetypeFactor * 0.7 + secondaryFactor * 0.3;
-			}
-
-			rawRatings[key] = limitRating(rawRatings[key] * archetypeFactor);
-		}
-
 		if (key === "fg" || key === "tp" || key === "pss" || key === "diq") {
 			console.log({
 				primaryArchetype,
@@ -188,6 +177,17 @@ const genRatings = (
 				value: rawRatings[key],
 			});
 		}
+	}
+
+	for (const key of helpers.keys(rawRatings)) {
+		let archetypeFactor = primaryMods[key] ?? 1;
+
+		if (secondaryMods) {
+			const secondaryFactor = secondaryMods[key] ?? 1;
+			archetypeFactor = archetypeFactor * 0.7 + secondaryFactor * 0.3;
+		}
+
+		rawRatings[key] = limitRating(rawRatings[key] * archetypeFactor);
 	}
 
 	const ratings = {
