@@ -19,6 +19,8 @@ const PlayerRatings = ({
 	season,
 	userTid,
 }: View<"playerRatings">) => {
+	console.log("SAMPLE PLAYER:", players[0]);
+
 	useTitleBar({
 		title: "Player Ratings",
 		jumpTo: true,
