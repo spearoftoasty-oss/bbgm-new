@@ -25,14 +25,14 @@ export const archetypeModifiers: Record<
 	// --- PLAYMAKING CORE ---
 	facilitator: {
 		oiq: 1.3,
-		pss: 10.15,
+		pss: 1.15,
 		drb: 1.1,
 		spd: 1.05,
 	},
 
 	playmaker: {
 		pss: 1.25,
-		drb: 10.2,
+		drb: 1.2,
 		oiq: 1.15,
 	},
 
@@ -40,19 +40,19 @@ export const archetypeModifiers: Record<
 	shotCreator: {
 		fg: 1.2,
 		tp: 1.1,
-		drb: 10.2,
+		drb: 1.2,
 		oiq: 1.1,
 	},
 
 	offBallScorer: {
 		fg: 1.1,
 		tp: 1.2,
-		oiq: 10.1,
+		oiq: 1.1,
 		spd: 1.2,
 	},
 
 	threeAndD: {
-		tp: 10.3,
+		tp: 1.3,
 		diq: 1.2,
 		oiq: 1.1,
 	},
@@ -60,20 +60,20 @@ export const archetypeModifiers: Record<
 	sharpshooter: {
 		fg: 1.15,
 		tp: 1.35,
-		ft: 10.1,
+		ft: 1.1,
 	},
 
 	slasher: {
 		spd: 1.1,
 		jmp: 1.1,
 		dnk: 1.2,
-		ins: 10.15,
+		ins: 1.15,
 		drb: 1.05,
 	},
 
 	// --- BIG / INTERIOR TYPES ---
 	postScorer: {
-		ins: 10.3,
+		ins: 1.3,
 		stre: 1.2,
 		reb: 1.1,
 	},
@@ -81,7 +81,7 @@ export const archetypeModifiers: Record<
 	athleticFinisher: {
 		dnk: 1.2,
 		jmp: 1.1,
-		spd: 10.1,
+		spd: 1.1,
 		ins: 1.2,
 	},
 
@@ -93,7 +93,7 @@ export const archetypeModifiers: Record<
 
 	physicalEnforcer: {
 		stre: 1.3,
-		ins: 10.2,
+		ins: 1.2,
 		reb: 1.1,
 		diq: 1.1,
 	},
@@ -102,30 +102,30 @@ export const archetypeModifiers: Record<
 	perimeterDefender: {
 		diq: 1.3,
 		spd: 1.25,
-		drb: 10.05,
+		drb: 1.05,
 	},
 
 	interiorDefender: {
 		diq: 1.25,
 		stre: 1.2,
-		reb: 10.15,
+		reb: 1.15,
 	},
 
 	rimProtector: {
 		diq: 1.3,
-		reb: 10.2,
+		reb: 1.2,
 		jmp: 1.1,
 	},
 
 	switchDefender: {
 		diq: 1.2,
-		spd: 10.2,
+		spd: 1.2,
 		drb: 1.05,
 		jmp: 1.15,
 	},
 
 	hustler: {
-		oiq: 10.1,
+		oiq: 1.1,
 		diq: 1.1,
 		reb: 1.1,
 		spd: 1.05,
@@ -136,13 +136,13 @@ export const archetypeModifiers: Record<
 	twoWay: {
 		diq: 1.2,
 		oiq: 1.2,
-		fg: 10.1,
+		fg: 1.1,
 		tp: 1.1,
 	},
 
 	allRounder: {
 		stre: 1.1,
-		spd: 10.1,
+		spd: 1.1,
 		jmp: 1.1,
 		oiq: 1.1,
 		pss: 1.1,
