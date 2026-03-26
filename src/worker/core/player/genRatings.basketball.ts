@@ -49,6 +49,23 @@ const athleticismRatings = new Set(["stre", "spd", "jmp", "endu", "dnk"]);
 const shootingRatings = new Set(["ft", "fg", "tp"]);
 const skillRatings = new Set(["oiq", "diq", "drb", "pss", "reb"]); // ins purposely left out
 
+type ArchetypeTier = "gold" | "silver" | "bronze";
+
+function tierMultiplier(tier: ArchetypeTier) {
+	if (tier === "gold") return 1.35;
+	if (tier === "silver") return 1.15;
+	return 1.0;
+}
+
+function applyArchetype(
+	key: RatingKey,
+	archetype: Archetype,
+	tier: ArchetypeTier,
+) {
+	const mod = archetypeModifiers[archetype]?.[key] ?? 1;
+	return 1 + (mod - 1) * tierMultiplier(tier);
+}
+
 const genRatings = (
 	season: number,
 	scoutingLevel: number,
@@ -114,23 +131,26 @@ const genRatings = (
 
 	const archetypeList = Object.keys(archetypeModifiers) as Archetype[];
 
-	// Primary archetype (everyone gets one)
+	function getTierWeights(): ArchetypeTier {
+		const r = Math.random();
+		if (r < 0.15) return "gold";
+		if (r < 0.5) return "silver";
+		return "bronze";
+	}
+
+	// Always assign 2 archetypes
 	const primaryArchetype =
 		archetypeList[Math.floor(Math.random() * archetypeList.length)];
 
-	// 30% chance to get a secondary archetype
-	let secondaryArchetype: Archetype | null = null;
+	let secondaryArchetype: Archetype;
+	do {
+		secondaryArchetype =
+			archetypeList[Math.floor(Math.random() * archetypeList.length)];
+	} while (secondaryArchetype === primaryArchetype);
 
-	if (Math.random() < 0.3) {
-		let candidate: Archetype;
-
-		do {
-			candidate =
-				archetypeList[Math.floor(Math.random() * archetypeList.length)];
-		} while (candidate === primaryArchetype);
-
-		secondaryArchetype = candidate;
-	}
+	// Assign tiers
+	const primaryTier = getTierWeights();
+	const secondaryTier = getTierWeights();
 
 	// For correlation across ratings, to ensure some awesome players, but athleticism and skill are independent to
 	// ensure there are some who are elite in one but not the other
@@ -138,10 +158,6 @@ const genRatings = (
 	const factorShooting = helpers.bound(random.realGauss(1, 0.3), 0.2, 1.2);
 	const factorSkill = helpers.bound(random.realGauss(1, 0.3), 0.2, 1.2);
 	const factorIns = helpers.bound(random.realGauss(1, 0.3), 0.2, 1.2);
-	const primaryMods = archetypeModifiers[primaryArchetype];
-	const secondaryMods = secondaryArchetype
-		? archetypeModifiers[secondaryArchetype]
-		: null;
 
 	for (const key of helpers.keys(rawRatings)) {
 		const typeFactor = typeFactors[type][key] ?? 1;
@@ -156,38 +172,23 @@ const genRatings = (
 			factor = factorSkill;
 		}
 
-		// --- Archetype blending ---
-		let archetypeFactor = primaryMods[key] ?? 1;
+		const primary = applyArchetype(key, primaryArchetype, primaryTier);
+		const secondary = applyArchetype(key, secondaryArchetype, secondaryTier);
 
-		if (secondaryMods) {
-			const secondaryFactor = secondaryMods[key] ?? 1;
+		const archetypeMultiplier = primary * 0.7 + secondary * 0.3;
 
-			// Weighted blend (primary dominates)
-			archetypeFactor = archetypeFactor * 0.7 + secondaryFactor * 0.3;
-		}
-
-		rawRatings[key] = limitRating(factor * typeFactor * rawRatings[key]);
+		rawRatings[key] = limitRating(
+			factor * typeFactor * archetypeMultiplier * rawRatings[key],
+		);
 
 		if (key === "fg" || key === "tp" || key === "pss" || key === "diq") {
 			console.log({
 				primaryArchetype,
 				secondaryArchetype,
 				key,
-				archetypeFactor,
 				value: rawRatings[key],
 			});
 		}
-	}
-
-	for (const key of helpers.keys(rawRatings)) {
-		let archetypeFactor = primaryMods[key] ?? 1;
-
-		if (secondaryMods) {
-			const secondaryFactor = secondaryMods[key] ?? 1;
-			archetypeFactor = archetypeFactor * 0.7 + secondaryFactor * 0.3;
-		}
-
-		rawRatings[key] = limitRating(rawRatings[key] * archetypeFactor);
 	}
 
 	const ratings = {
@@ -211,9 +212,10 @@ const genRatings = (
 		pos: "F",
 		pot: 0,
 		season,
-		skills: secondaryArchetype
-			? [primaryArchetype, secondaryArchetype]
-			: [primaryArchetype],
+		skills: [
+			{ archetype: primaryArchetype, tier: primaryTier },
+			{ archetype: secondaryArchetype, tier: secondaryTier },
+		],
 	};
 
 	return {

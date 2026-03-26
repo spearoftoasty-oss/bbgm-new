@@ -8,7 +8,6 @@ import type {
 } from "../../../common/types.ts";
 import genWeight from "./genWeight.ts";
 import genMoodTraits from "./genMoodTraits.ts";
-console.log("🔥🔥🔥 genRatings IS RUNNING 🔥🔥🔥");
 
 const generate = (
 	tid: number,
@@ -40,6 +39,9 @@ const generate = (
 		newLeague ? g.get("startingSeason") : draftYear,
 		scoutingLevel,
 	);
+
+	console.log("🔥 PLAYER SKILLS RAW:", ratings.skills);
+
 	// lastName += `-${genPos}`;
 
 	const weight = genWeight(ratings.hgt, (ratings as any).stre);
